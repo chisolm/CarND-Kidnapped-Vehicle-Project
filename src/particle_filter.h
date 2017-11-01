@@ -37,6 +37,15 @@ class ParticleFilter {
 	
 	// Vector of weights of all particles
 	std::vector<double> weights;
+
+	// Precomputed values
+	double inv_2_pi_sigx_sigy;
+	double two_sig_x_sq;
+	double two_sig_y_sq;
+
+	// Debug flag
+	int debug = 1;
+	int updatecycle = 0;
 	
 public:
 	
@@ -59,7 +68,7 @@ public:
 	 * @param std[] Array of dimension 3 [standard deviation of x [m], standard deviation of y [m]
 	 *   standard deviation of yaw [rad]]
 	 */
-	void init(double x, double y, double theta, double std[]);
+	void init(double x, double y, double theta, double std[], double std_landmark[]);
 
 	/**
 	 * prediction Predicts the state for the next time step
@@ -71,7 +80,12 @@ public:
 	 * @param yaw_rate Yaw rate of car from t to t+1 [rad/s]
 	 */
 	void prediction(double delta_t, double std_pos[], double velocity, double yaw_rate);
-	
+
+	/**
+	 * Helper function multivariate_gaussian
+	 */
+	double multivariate_gaussian(double x_obs_map, double y_obs_map, double x_ref, double y_ref);
+
 	/**
 	 * dataAssociation Finds which observations correspond to which landmarks (likely by using
 	 *   a nearest-neighbors data association).
